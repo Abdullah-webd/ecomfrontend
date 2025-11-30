@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useStore } from "../store/store";
 
-const API_URL = "http://localhost:5000/api";
+const API_URL = "https://ecombackend-6xca.onrender.com/api";
 
 // 🆕 replace with your own Cloudinary info
 const CLOUDINARY_URL = "https://api.cloudinary.com/v1_1/dkdw9jbxm/image/upload";
@@ -20,7 +20,7 @@ export default function AdminDashboard() {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(false);
   const [imageFile, setImageFile] = useState(null); // 🆕 image state
-  const [expandedOrder, setExpandedOrder] = useState(null) // track expanded order for details
+  const [expandedOrder, setExpandedOrder] = useState(null); // track expanded order for details
 
   const [formData, setFormData] = useState({
     title: "",
@@ -153,21 +153,26 @@ export default function AdminDashboard() {
     }
   };
 
-   const handleUpdateOrderStatus = async (orderId, newStatus) => {
+  const handleUpdateOrderStatus = async (orderId, newStatus) => {
     try {
       const response = await axios.put(
         `${API_URL}/admin/orders/${orderId}/status`,
         { orderStatus: newStatus },
-        { headers: { Authorization: `Bearer ${token}` } },
-      )
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
 
       // Update the orders list with the new status
-      setOrders(orders.map((order) => (order._id === orderId ? response.data : order)))
-      alert(`Order status updated to ${newStatus}!`)
+      setOrders(
+        orders.map((order) => (order._id === orderId ? response.data : order))
+      );
+      alert(`Order status updated to ${newStatus}!`);
     } catch (error) {
-      alert("Error updating order status: " + (error.response?.data?.message || error.message))
+      alert(
+        "Error updating order status: " +
+          (error.response?.data?.message || error.message)
+      );
     }
-  }
+  };
 
   if (!user || !user.isAdmin) return null;
 
@@ -332,17 +337,24 @@ export default function AdminDashboard() {
         </div>
       )}
       {/* Orders Tab */}{" "}
-       {tab === "orders" && (
+      {tab === "orders" && (
         <div>
           {loading ? (
             <p>Loading...</p>
           ) : (
             <div className="space-y-4">
               {orders.map((order) => (
-                <div key={order._id} className="bg-white rounded-lg border border-gray-200 overflow-hidden">
+                <div
+                  key={order._id}
+                  className="bg-white rounded-lg border border-gray-200 overflow-hidden"
+                >
                   <div
                     className="p-6 flex justify-between items-center cursor-pointer hover:bg-gray-50 transition"
-                    onClick={() => setExpandedOrder(expandedOrder === order._id ? null : order._id)}
+                    onClick={() =>
+                      setExpandedOrder(
+                        expandedOrder === order._id ? null : order._id
+                      )
+                    }
                   >
                     <div className="flex-1">
                       <div className="flex items-center gap-4">
@@ -350,16 +362,24 @@ export default function AdminDashboard() {
                           <p className="font-bold text-gray-900">
                             {order.user?.firstName} {order.user?.lastName}
                           </p>
-                          <p className="text-sm text-gray-600">Order ID: {order._id}</p>
-                          <p className="text-sm text-gray-600">Email: {order.user?.email} </p>
+                          <p className="text-sm text-gray-600">
+                            Order ID: {order._id}
+                          </p>
+                          <p className="text-sm text-gray-600">
+                            Email: {order.user?.email}{" "}
+                          </p>
                         </div>
                       </div>
                     </div>
 
                     <div className="flex items-center gap-4">
                       <div className="text-right">
-                        <p className="font-bold text-gray-900">${order.totalPrice.toFixed(2)}</p>
-                        <p className="text-sm text-gray-600">{new Date(order.createdAt).toLocaleDateString()}</p>
+                        <p className="font-bold text-gray-900">
+                          ${order.totalPrice.toFixed(2)}
+                        </p>
+                        <p className="text-sm text-gray-600">
+                          {new Date(order.createdAt).toLocaleDateString()}
+                        </p>
                       </div>
 
                       <span
@@ -367,10 +387,10 @@ export default function AdminDashboard() {
                           order.orderStatus === "delivered"
                             ? "bg-green-100 text-green-800"
                             : order.orderStatus === "shipped"
-                              ? "bg-blue-100 text-blue-800"
-                              : order.orderStatus === "processing"
-                                ? "bg-yellow-100 text-yellow-800"
-                                : "bg-red-100 text-red-800"
+                            ? "bg-blue-100 text-blue-800"
+                            : order.orderStatus === "processing"
+                            ? "bg-yellow-100 text-yellow-800"
+                            : "bg-red-100 text-red-800"
                         }`}
                       >
                         {order.orderStatus}
@@ -381,38 +401,57 @@ export default function AdminDashboard() {
                   {expandedOrder === order._id && (
                     <div className="border-t border-gray-200 p-6 bg-gray-50">
                       <div className="mb-6">
-                        <h3 className="font-bold text-gray-900 mb-3">Order Items</h3>
+                        <h3 className="font-bold text-gray-900 mb-3">
+                          Order Items
+                        </h3>
                         <div className="space-y-2">
                           {order.items.map((item, idx) => (
-                            <div key={idx} className="flex justify-between text-sm">
+                            <div
+                              key={idx}
+                              className="flex justify-between text-sm"
+                            >
                               <span className="text-gray-600">
                                 {item.title} ({item.size}) × {item.quantity}
                               </span>
-                              <span className="font-semibold">${(item.price * item.quantity).toFixed(2)}</span>
+                              <span className="font-semibold">
+                                ${(item.price * item.quantity).toFixed(2)}
+                              </span>
                             </div>
                           ))}
                         </div>
                       </div>
 
                       <div className="mb-6">
-                        <h3 className="font-bold text-gray-900 mb-3">Shipping Address</h3>
+                        <h3 className="font-bold text-gray-900 mb-3">
+                          Shipping Address
+                        </h3>
                         <div className="text-sm text-gray-600 space-y-1">
                           <p>{order.shippingAddress.fullName}</p>
                           <p>{order.shippingAddress.address}</p>
                           <p>
-                            {order.shippingAddress.city}, {order.shippingAddress.zipCode}
+                            {order.shippingAddress.city},{" "}
+                            {order.shippingAddress.zipCode}
                           </p>
                           <p>{order.shippingAddress.country}</p>
                         </div>
                       </div>
 
                       <div>
-                        <h3 className="font-bold text-gray-900 mb-3">Update Status</h3>
+                        <h3 className="font-bold text-gray-900 mb-3">
+                          Update Status
+                        </h3>
                         <div className="flex flex-wrap gap-2">
-                          {["processing", "shipped", "delivered", "cancelled"].map((status) => (
+                          {[
+                            "processing",
+                            "shipped",
+                            "delivered",
+                            "cancelled",
+                          ].map((status) => (
                             <button
                               key={status}
-                              onClick={() => handleUpdateOrderStatus(order._id, status)}
+                              onClick={() =>
+                                handleUpdateOrderStatus(order._id, status)
+                              }
                               className={`px-4 py-2 rounded text-sm font-semibold transition ${
                                 order.orderStatus === status
                                   ? "bg-gray-900 text-white"

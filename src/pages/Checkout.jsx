@@ -1,15 +1,15 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { useNavigate } from "react-router-dom"
-import axios from "axios"
-import { useStore } from "../store/store"
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import { useStore } from "../store/store";
 
-const API_URL = "http://localhost:5000/api"
+const API_URL = "https://ecombackend-6xca.onrender.com/api";
 
 export default function Checkout() {
-  const navigate = useNavigate()
-  const { cart, user, clearCart, token } = useStore()
+  const navigate = useNavigate();
+  const { cart, user, clearCart, token } = useStore();
   const [formData, setFormData] = useState({
     fullName: user?.firstName ? `${user.firstName} ${user.lastName}` : "",
     email: user?.email || "",
@@ -20,11 +20,11 @@ export default function Checkout() {
     cardNumber: "",
     expiry: "",
     cvc: "",
-  })
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState("")
+  });
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
-  const total = cart.reduce((sum, item) => sum + item.price * item.quantity, 0)
+  const total = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
 
   if (cart.length === 0) {
     return (
@@ -32,18 +32,18 @@ export default function Checkout() {
         <h1 className="text-4xl font-bold text-gray-900 mb-8">Checkout</h1>
         <p className="text-gray-600 mb-8">Your cart is empty</p>
       </div>
-    )
+    );
   }
 
   const handleChange = (e) => {
-    const { name, value } = e.target
-    setFormData((prev) => ({ ...prev, [name]: value }))
-  }
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
 
   const handleSubmit = async (e) => {
-    e.preventDefault()
-    setError("")
-    setLoading(true)
+    e.preventDefault();
+    setError("");
+    setLoading(true);
 
     try {
       const orderItems = cart.map((item) => ({
@@ -53,7 +53,7 @@ export default function Checkout() {
         quantity: item.quantity,
         size: item.size,
         image: item.image,
-      }))
+      }));
 
       await axios.post(
         `${API_URL}/orders/demo`,
@@ -71,17 +71,17 @@ export default function Checkout() {
         },
         {
           headers: user?.email ? { Authorization: `Bearer ${token}` } : {},
-        },
-      )
+        }
+      );
 
-      clearCart()
-      navigate("/", { state: { message: "Order placed successfully!" } })
+      clearCart();
+      navigate("/", { state: { message: "Order placed successfully!" } });
     } catch (err) {
-      setError(err.response?.data?.message || "An error occurred")
+      setError(err.response?.data?.message || "An error occurred");
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-12">
@@ -91,7 +91,11 @@ export default function Checkout() {
       <div className="bg-yellow-50 border-l-4 border-yellow-400 p-4 mb-8">
         <div className="flex">
           <div className="flex-shrink-0">
-            <svg className="h-5 w-5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
+            <svg
+              className="h-5 w-5 text-yellow-400"
+              fill="currentColor"
+              viewBox="0 0 20 20"
+            >
               <path
                 fillRule="evenodd"
                 d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z"
@@ -100,7 +104,9 @@ export default function Checkout() {
             </svg>
           </div>
           <div className="ml-3">
-            <p className="text-sm font-bold text-yellow-800">DEMO MODE — DO NOT USE REAL CARDS</p>
+            <p className="text-sm font-bold text-yellow-800">
+              DEMO MODE — DO NOT USE REAL CARDS
+            </p>
             <p className="text-sm text-yellow-700 mt-1">
               Use Stripe test card: 4242 4242 4242 4242 | Any expiry | Any CVC
             </p>
@@ -112,11 +118,17 @@ export default function Checkout() {
         {/* Form */}
         <div className="lg:col-span-2">
           <form onSubmit={handleSubmit} className="space-y-6">
-            {error && <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded">{error}</div>}
+            {error && (
+              <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded">
+                {error}
+              </div>
+            )}
 
             {/* Shipping Address */}
             <div>
-              <h2 className="text-xl font-bold text-gray-900 mb-4">Shipping Address</h2>
+              <h2 className="text-xl font-bold text-gray-900 mb-4">
+                Shipping Address
+              </h2>
               <div className="space-y-4">
                 <input
                   type="text"
@@ -179,7 +191,9 @@ export default function Checkout() {
 
             {/* Payment */}
             <div>
-              <h2 className="text-xl font-bold text-gray-900 mb-4">Payment Information</h2>
+              <h2 className="text-xl font-bold text-gray-900 mb-4">
+                Payment Information
+              </h2>
               <div className="space-y-4">
                 <input
                   type="text"
@@ -226,15 +240,22 @@ export default function Checkout() {
         {/* Order Summary */}
         <div>
           <div className="bg-white rounded-lg p-6 sticky top-24">
-            <h2 className="text-xl font-bold text-gray-900 mb-6">Order Summary</h2>
+            <h2 className="text-xl font-bold text-gray-900 mb-6">
+              Order Summary
+            </h2>
 
             <div className="space-y-4 mb-6 max-h-64 overflow-y-auto">
               {cart.map((item) => (
-                <div key={`${item.id}-${item.size}`} className="flex justify-between text-sm">
+                <div
+                  key={`${item.id}-${item.size}`}
+                  className="flex justify-between text-sm"
+                >
                   <span className="text-gray-600">
                     {item.title} ({item.size}) × {item.quantity}
                   </span>
-                  <span className="font-semibold">${(item.price * item.quantity).toFixed(2)}</span>
+                  <span className="font-semibold">
+                    ${(item.price * item.quantity).toFixed(2)}
+                  </span>
                 </div>
               ))}
             </div>
@@ -257,5 +278,5 @@ export default function Checkout() {
         </div>
       </div>
     </div>
-  )
+  );
 }

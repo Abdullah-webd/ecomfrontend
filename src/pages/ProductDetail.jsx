@@ -1,44 +1,44 @@
-"use client"
+"use client";
 
-import { useState, useEffect } from "react"
-import { useParams } from "react-router-dom"
-import axios from "axios"
-import { useStore } from "../store/store"
+import { useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
+import axios from "axios";
+import { useStore } from "../store/store";
 
-const API_URL = "http://localhost:5000/api"
+const API_URL = "https://ecombackend-6xca.onrender.com/api";
 
 export default function ProductDetail() {
-  const { id } = useParams()
-  const [product, setProduct] = useState(null)
-  const [selectedSize, setSelectedSize] = useState("")
-  const [quantity, setQuantity] = useState(1)
-  const [imageIndex, setImageIndex] = useState(0)
-  const { addToCart, addToWishlist } = useStore()
+  const { id } = useParams();
+  const [product, setProduct] = useState(null);
+  const [selectedSize, setSelectedSize] = useState("");
+  const [quantity, setQuantity] = useState(1);
+  const [imageIndex, setImageIndex] = useState(0);
+  const { addToCart, addToWishlist } = useStore();
 
   useEffect(() => {
     const fetchProduct = async () => {
       try {
-        const response = await axios.get(`${API_URL}/products/${id}`)
-        setProduct(response.data)
+        const response = await axios.get(`${API_URL}/products/${id}`);
+        setProduct(response.data);
         if (response.data.sizes && response.data.sizes.length > 0) {
-          setSelectedSize(response.data.sizes[0])
+          setSelectedSize(response.data.sizes[0]);
         }
       } catch (error) {
-        console.error("Error fetching product:", error)
+        console.error("Error fetching product:", error);
       }
-    }
+    };
 
-    fetchProduct()
-  }, [id])
+    fetchProduct();
+  }, [id]);
 
   if (!product) {
-    return <div className="text-center py-12">Loading...</div>
+    return <div className="text-center py-12">Loading...</div>;
   }
 
   const handleAddToCart = () => {
     if (!selectedSize) {
-      alert("Please select a size")
-      return
+      alert("Please select a size");
+      return;
     }
     for (let i = 0; i < quantity; i++) {
       addToCart({
@@ -47,10 +47,10 @@ export default function ProductDetail() {
         price: product.price,
         image: product.images[0]?.secure_url,
         size: selectedSize,
-      })
+      });
     }
-    alert("Added to cart!")
-  }
+    alert("Added to cart!");
+  };
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-12">
@@ -74,7 +74,11 @@ export default function ProductDetail() {
                     idx === imageIndex ? "border-gray-900" : "border-gray-200"
                   }`}
                 >
-                  <img src={img.secure_url || "/placeholder.svg"} alt="" className="w-full h-full object-cover" />
+                  <img
+                    src={img.secure_url || "/placeholder.svg"}
+                    alt=""
+                    className="w-full h-full object-cover"
+                  />
                 </button>
               ))}
             </div>
@@ -83,20 +87,30 @@ export default function ProductDetail() {
 
         {/* Details */}
         <div>
-          <h1 className="text-4xl font-bold text-gray-900 mb-4">{product.title}</h1>
+          <h1 className="text-4xl font-bold text-gray-900 mb-4">
+            {product.title}
+          </h1>
 
           <p className="text-gray-600 mb-6 text-lg">{product.description}</p>
 
           <div className="mb-6">
-            <span className="text-3xl font-bold text-gray-900">${product.price.toFixed(2)}</span>
-            <span className={`ml-4 text-sm ${product.stock > 0 ? "text-green-600" : "text-red-600"}`}>
+            <span className="text-3xl font-bold text-gray-900">
+              ${product.price.toFixed(2)}
+            </span>
+            <span
+              className={`ml-4 text-sm ${
+                product.stock > 0 ? "text-green-600" : "text-red-600"
+              }`}
+            >
               {product.stock > 0 ? `${product.stock} in stock` : "Out of stock"}
             </span>
           </div>
 
           {/* Size Selection */}
           <div className="mb-6">
-            <label className="block font-semibold text-gray-900 mb-3">Select Size</label>
+            <label className="block font-semibold text-gray-900 mb-3">
+              Select Size
+            </label>
             <div className="grid grid-cols-4 gap-2">
               {product.sizes &&
                 product.sizes.map((size) => (
@@ -117,7 +131,9 @@ export default function ProductDetail() {
 
           {/* Quantity */}
           <div className="mb-6">
-            <label className="block font-semibold text-gray-900 mb-3">Quantity</label>
+            <label className="block font-semibold text-gray-900 mb-3">
+              Quantity
+            </label>
             <div className="flex items-center gap-4">
               <button
                 onClick={() => setQuantity(Math.max(1, quantity - 1))}
@@ -168,5 +184,5 @@ export default function ProductDetail() {
         </div>
       </div>
     </div>
-  )
+  );
 }
